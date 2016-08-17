@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 /**
@@ -25,7 +27,10 @@ public class ViewAdapter extends ArrayAdapter{
         }
 
         ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
-        imageView.setImageResource(getContext().getResources().getIdentifier((String)getItem(position), "drawable", getContext().getPackageName()));
+//        imageView.setImageResource(getContext().getResources().getIdentifier((String)getItem(position), "drawable", getContext().getPackageName()));
+        Picasso.with(getContext())
+                .load(getContext().getResources().getIdentifier((String)getItem(position), "drawable", getContext().getPackageName()))
+                .into(imageView);
 
         return convertView;
     }
