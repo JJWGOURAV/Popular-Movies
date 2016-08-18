@@ -1,6 +1,9 @@
 package gouravexample.popularmoviesstage1;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -31,8 +34,15 @@ public class MovieItem {
         return releaseDate;
     }
 
-    public void setReleaseDate(Date releaseDate) {
-        this.releaseDate = releaseDate;
+    public void setReleaseDate(String dateStr) {
+
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            this.releaseDate = (Date)formatter.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public int[] getGenreIds() {
