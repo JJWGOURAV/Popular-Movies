@@ -36,7 +36,7 @@ public class ViewAdapter extends ArrayAdapter<MovieItem>{
 //        imageView.setImageResource(getContext().getResources().getIdentifier((String)getItem(position), "drawable", getContext().getPackageName()));
         Picasso.with(getContext())
                 .load(item.getPosterPath())
-                .placeholder(R.drawable.circular)
+//                .placeholder(R.drawable.circular)
 //                .resize(185,278)
 //                .centerCrop()
                 .into(imageView);
