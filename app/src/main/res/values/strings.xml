@@ -2,4 +2,21 @@
     <string name="app_name">Popular Movies: Stage 1</string>
     <string name="demo_overview">Every child comes into the world full of promise and none more so than Chappie: he is gifted, special and a prodigy. Chappie is a robot.</string>
     <string name="trailers">Trailers:</string>
+    <string name="sort_order">Sort Order</string>
+    <string name="popular">Popular</string>
+    <string name="top_rated">Top Rated</string>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string-array name="sort_order_values">
+        <item>@string/popular</item>
+        <item>@string/top_rated</item>
+    </string-array>
+
+
 </resources>

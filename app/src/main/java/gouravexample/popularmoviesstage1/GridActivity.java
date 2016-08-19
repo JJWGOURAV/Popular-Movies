@@ -2,12 +2,15 @@ package gouravexample.popularmoviesstage1;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.JsonReader;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
@@ -62,7 +65,6 @@ public class GridActivity extends AppCompatActivity {
             }
         });
 
-        new FetchMovies().execute();
     }
 
     private List<MovieItem> getMovies(){
@@ -102,10 +104,36 @@ public class GridActivity extends AppCompatActivity {
            return true;
     }
 
-    private class FetchMovies extends AsyncTask<Void,Void,String>{
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String sortOrder = sharedPrefs.getString(getString(R.string.sort_order), getString(R.string.popular));
+
+        new FetchMovies().execute(sortOrder);
+    }
+
+    private class FetchMovies extends AsyncTask<String,Void,String>{
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected String doInBackground(String... params) {
 
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
@@ -116,7 +144,14 @@ public class GridActivity extends AppCompatActivity {
             String forecastJsonStr = null;
 
             try {
-                URL url = new URL("http://api.themoviedb.org/3/movie/popular?api_key=" + Constants.THEMOVIEDB_API_KEY);
+                URL url=null;
+                if(params[0].equals(getResources().getString(R.string.popular))){
+                    url = new URL("http://api.themoviedb.org/3/movie/popular?api_key=" + Constants.THEMOVIEDB_API_KEY);
+                } else if(params[0].equals(getResources().getString(R.string.top_rated))){
+                    url = new URL("http://api.themoviedb.org/3/movie/top_rated?api_key=" + Constants.THEMOVIEDB_API_KEY);
+                } else {
+                    url = new URL("http://api.themoviedb.org/3/movie/top_rated?api_key=" + Constants.THEMOVIEDB_API_KEY);
+                }
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
