@@ -16,11 +16,11 @@ import java.util.List;
 /**
  * Created by GOURAV on 19-08-2016.
  */
-public class TrailerListAdapter extends ArrayAdapter<String> {
+public class TrailerListAdapter extends ArrayAdapter<Trailer> {
 
     private static final String LOG_TAG = TrailerListAdapter.class.getSimpleName();
 
-    public TrailerListAdapter(Context context, int resource, List<String> objects) {
+    public TrailerListAdapter(Context context, int resource, List<Trailer> objects) {
         super(context, resource, objects);
     }
 
@@ -31,8 +31,8 @@ public class TrailerListAdapter extends ArrayAdapter<String> {
         }
 
         TextView trailerText = (TextView) convertView.findViewById(R.id.trailer_text);
-        String item = (String) getItem(position);
-        trailerText.setText(item);
+        Trailer item = (Trailer) getItem(position);
+        trailerText.setText(item.getName());
 
         return convertView;
     }

@@ -25,6 +25,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private MovieItem movieItem;
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
+    private ListView trailerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,20 +40,19 @@ public class DetailActivity extends AppCompatActivity {
 
         new FetchMovieDetails().execute();
 
-        ListView trailerList = (ListView) findViewById(R.id.trailer_list);
-        View headerView = getLayoutInflater().inflate(R.layout.trailer_header_view, null);
-
-        trailerList.addHeaderView(headerView);
-
-        List<String> trailers = getTrailerData();
-
-        TrailerListAdapter adapter = new TrailerListAdapter(DetailActivity.this,0,trailers);
-        trailerList.setAdapter(adapter);
+        trailerList = (ListView) findViewById(R.id.trailer_list);
 
     }
 
     private void setData(){
         ((TextView)findViewById(R.id.title)).setText(movieItem.getTitle());
+
+        if(movieItem.getTitle().length() > 20){
+            ((TextView)findViewById(R.id.title)).setTextSize(28);
+        } else if(movieItem.getTitle().length() > 40){
+            ((TextView)findViewById(R.id.title)).setTextSize(20);
+        }
+
         Picasso.with(DetailActivity.this).load(movieItem.getPosterPath()).placeholder(R.drawable.circular).into((ImageView)findViewById(R.id.image));
         ((TextView)findViewById(R.id.yearOfRelease)).setText(String.valueOf(movieItem.getReleaseYear()));
         ((TextView)findViewById(R.id.runningTime)).setText(String.valueOf(movieItem.getRuntime()) + " min");
@@ -145,11 +145,16 @@ public class DetailActivity extends AppCompatActivity {
 //            progressBar.clearAnimation();
 //            progressBar.setVisibility(View.GONE);
 
+
             JSONDetailParser parser = new JSONDetailParser();
             try {
                 DetailActivity.this.movieItem = parser.parseJsonStream(new ByteArrayInputStream(jsonString.getBytes()));
 
                 setData();
+
+                TrailerListAdapter adapter = new TrailerListAdapter(DetailActivity.this,0,movieItem.getTrailerList());
+                trailerList.setAdapter(adapter);
+
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
