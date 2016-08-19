@@ -1,6 +1,7 @@
 package gouravexample.popularmoviesstage1;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 
@@ -29,9 +31,12 @@ import java.util.List;
 
 public class GridActivity extends AppCompatActivity {
 
+    public static final String MOVIE_ITEM = "movieItem";
+    private static final String LOG_TAG = GridActivity.class.getSimpleName();
 
-    ProgressBar progressBar;
+//    ProgressBar progressBar;
     GridView gridView;
+    List<MovieItem> movieItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,17 @@ public class GridActivity extends AppCompatActivity {
 //        animation.setDuration (5000); //in milliseconds
 //        animation.setInterpolator (new DecelerateInterpolator());
 //        animation.start ();
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(GridActivity.this,DetailActivity.class);
+                intent.putExtra(MOVIE_ITEM,movieItems.get(position));
+                startActivity(intent);
+            }
+        });
 
         new FetchMovies().execute();
     }
@@ -100,7 +116,7 @@ public class GridActivity extends AppCompatActivity {
             String forecastJsonStr = null;
 
             try {
-                URL url = new URL("http://api.themoviedb.org/3/movie/popular?api_key=YOUR_API_KEY_HERE");
+                URL url = new URL("http://api.themoviedb.org/3/movie/popular?api_key=" + Constants.THEMOVIEDB_API_KEY);
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -147,6 +163,8 @@ public class GridActivity extends AppCompatActivity {
                 }
             }
 
+            Log.d(LOG_TAG,forecastJsonStr);
+
             return forecastJsonStr;
         }
 
@@ -158,7 +176,7 @@ public class GridActivity extends AppCompatActivity {
 
             JSONParser parser = new JSONParser();
             try {
-                List<MovieItem> movieItems = parser.parseJsonStream(new ByteArrayInputStream(jsonString.getBytes()));
+                movieItems = parser.parseJsonStream(new ByteArrayInputStream(jsonString.getBytes()));
 
                 ViewAdapter adapter = new ViewAdapter(GridActivity.this,0,movieItems);
 

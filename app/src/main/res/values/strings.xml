@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Popular Movies: Stage 1</string>
+    <string name="demo_overview">Every child comes into the world full of promise and none more so than Chappie: he is gifted, special and a prodigy. Chappie is a robot.</string>
+    <string name="trailers">Trailers:</string>
 </resources>

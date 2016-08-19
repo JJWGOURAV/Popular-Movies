@@ -11,39 +11,13 @@ import java.util.List;
 /**
  * Created by GOURAV on 18-08-2016.
  */
-public class JSONParser {
+public class JSONDetailParser {
 
-    public List<MovieItem> parseJsonStream(InputStream in) throws IOException {
+    public MovieItem parseJsonStream(InputStream in) throws IOException {
         JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
-        List<MovieItem> movieItems = null;
-        try {
-            reader.beginObject();
-            while (reader.hasNext()) {
-                String name = reader.nextName();
-                if (name.equals("results")) {
-                    movieItems = readMoviesArray(reader);
-                } else {
-                    reader.skipValue();
-                }
-            }
-        } finally {
-            reader.endObject();
-            reader.close();
-        }
-
-        return movieItems;
+        return readMovieItem(reader);
     }
 
-    public List<MovieItem> readMoviesArray(JsonReader reader) throws IOException {
-        List<MovieItem> messages = new ArrayList<MovieItem>();
-
-        reader.beginArray();
-        while (reader.hasNext()) {
-            messages.add(readMovieItem(reader));
-        }
-        reader.endArray();
-        return messages;
-    }
 
     public MovieItem readMovieItem(JsonReader reader) throws IOException {
 
@@ -63,7 +37,7 @@ public class JSONParser {
             } else if (name.equals("genre_ids")) {
                 movieItem.setGenreIds(readGenreArray(reader));
             } else if (name.equals("trailers")) {
-//                movieItem.setTrailerList(readTrailerObject(reader));
+                movieItem.setTrailerList(readTrailerObject(reader));
             } else if (name.equals("id")) {
                 movieItem.setId(reader.nextInt());
             } else if (name.equals("original_title")) {
@@ -125,5 +99,55 @@ public class JSONParser {
 
     }
 
+    public List<Trailer> readTrailerObject(JsonReader reader) throws IOException {
 
+        List<Trailer> trailerList = null;
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("youtube")) {
+                trailerList = readTrailerArray(reader);
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return trailerList;
+    }
+
+    public List<Trailer> readTrailerArray(JsonReader reader) throws IOException {
+
+        List<Trailer> messages = new ArrayList<Trailer>();
+
+        reader.beginArray();
+        while (reader.hasNext()) {
+            messages.add(readTrailer(reader));
+        }
+        reader.endArray();
+        return messages;
+    }
+
+    public Trailer readTrailer(JsonReader reader) throws IOException {
+
+        Trailer trailer = new Trailer();
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("name")) {
+                trailer.setName(reader.nextString());
+            } else if (name.equals("size")) {
+                trailer.setSize(reader.nextString());
+            } else if (name.equals("source")) {
+                trailer.setSource(reader.nextString());
+            } else if (name.equals("type")) {
+                trailer.setType(reader.nextString());
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return trailer;
+    }
 }
