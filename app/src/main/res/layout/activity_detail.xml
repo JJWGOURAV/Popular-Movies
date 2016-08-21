@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.5"
-        android:text="Chappie"
+        tools:text="Chappie"
         android:background="@color/teal"
         android:textSize="36sp"
         android:padding="@dimen/activity_horizontal_margin"
@@ -43,7 +43,7 @@
                     android:layout_height="200dp"
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/demo_image"
+                    tools:src="@drawable/demo_image"
                     android:id="@+id/image" />
 
                 <LinearLayout
@@ -62,7 +62,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/yearOfRelease"
                             android:layout_marginTop="10dp"
-                            android:text="2015" />
+                            tools:text="2015" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -70,14 +70,14 @@
                             android:layout_marginTop="10dp"
                             android:id="@+id/runningTime"
                             android:textStyle="italic"
-                            android:text="120min" />
+                            tools:text="120min" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:id="@+id/rating"
-                            android:text="8.1/10" />
+                            tools:text="8.1/10" />
 
                         <Button
                             android:layout_width="match_parent"
@@ -98,7 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="@string/demo_overview"
+                tools:text="@string/demo_overview"
                 android:id="@+id/overview" />
 
             <View
