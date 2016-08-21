@@ -17,6 +17,7 @@ import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
@@ -35,6 +36,8 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity implements Preference.OnPreferenceChangeListener {
+
+    private AppCompatDelegate mDelegate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,4 +86,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Pre
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            if (!super.onOptionsItemSelected(item)) {
+                NavUtils.navigateUpFromSameTask(this);
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

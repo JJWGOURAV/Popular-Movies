@@ -1,43 +1,35 @@
 package gouravexample.popularmoviesstage1;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ProgressBar;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class GridActivity extends AppCompatActivity {
 
     public static final String MOVIE_ITEM = "movieItem";
     private static final String LOG_TAG = GridActivity.class.getSimpleName();
+    private String sortOrder="";
 
-//    ProgressBar progressBar;
     GridView gridView;
     List<MovieItem> movieItems;
 
@@ -48,11 +40,6 @@ public class GridActivity extends AppCompatActivity {
 
         gridView = (GridView) findViewById(R.id.grid_movies);
 
-//        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-//        ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "progress", 0, 500); // see this max value coming back here, we animale towards that value
-//        animation.setDuration (5000); //in milliseconds
-//        animation.setInterpolator (new DecelerateInterpolator());
-//        animation.start ();
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -125,9 +112,16 @@ public class GridActivity extends AppCompatActivity {
         super.onStart();
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String sortOrder = sharedPrefs.getString(getString(R.string.sort_order), getString(R.string.popular));
+        String newSortOrder = sharedPrefs.getString(getString(R.string.sort_order), getString(R.string.popular));
 
-        new FetchMovies().execute(sortOrder);
+        if(!sortOrder.equals(newSortOrder) || movieItems==null || movieItems.isEmpty()){
+            sortOrder = newSortOrder;
+            if(NetworkUtils.isNetworkAvailable(this))
+                new FetchMovies().execute(sortOrder);
+            else
+                Snackbar.make(findViewById(R.id.rootLayout), "No Internet Connection", Snackbar.LENGTH_SHORT).show();
+        }
+
     }
 
     private class FetchMovies extends AsyncTask<String,Void,String>{
@@ -206,11 +200,14 @@ public class GridActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String jsonString){
 
-//            progressBar.clearAnimation();
-//            progressBar.setVisibility(View.GONE);
-
             JSONParser parser = new JSONParser();
             try {
+
+                if(jsonString == null){
+                    Snackbar.make(findViewById(R.id.rootLayout), "No Internet Connection", Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
+
                 movieItems = parser.parseJsonStream(new ByteArrayInputStream(jsonString.getBytes()));
 
                 ViewAdapter adapter = new ViewAdapter(GridActivity.this,0,movieItems);

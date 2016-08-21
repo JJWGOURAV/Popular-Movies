@@ -1,6 +1,7 @@
 package gouravexample.popularmoviesstage1;
 
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,7 +39,10 @@ public class DetailActivity extends AppCompatActivity {
 
         setData();
 
-        new FetchMovieDetails().execute();
+        if(NetworkUtils.isNetworkAvailable(this))
+            new FetchMovieDetails().execute();
+        else
+            Snackbar.make(findViewById(R.id.rootLayout), "No Internet Connection", Snackbar.LENGTH_SHORT).show();
 
         trailerList = (ListView) findViewById(R.id.trailer_list);
 
@@ -148,6 +152,11 @@ public class DetailActivity extends AppCompatActivity {
 
             JSONDetailParser parser = new JSONDetailParser();
             try {
+                if(jsonString == null){
+                    Snackbar.make(findViewById(R.id.rootLayout), "No Internet Connection", Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
+
                 DetailActivity.this.movieItem = parser.parseJsonStream(new ByteArrayInputStream(jsonString.getBytes()));
 
                 setData();
