@@ -25,11 +25,17 @@ public class ViewAdapter extends ArrayAdapter<MovieItem>{
 
     public View getView(int position, View convertView, ViewGroup parent){
 
+        ViewHolder holder;
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.grid_item_movie,null);
+
+             holder = new ViewHolder();
+            holder.icon = (ImageView) convertView.findViewById(R.id.image);
+            convertView.setTag(holder);
+        }else{
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
         MovieItem item = (MovieItem)getItem(position);
 
         Log.d(LOG_TAG,item.getPosterPath());
@@ -39,8 +45,13 @@ public class ViewAdapter extends ArrayAdapter<MovieItem>{
 //                .placeholder(R.drawable.circular)
 //                .resize(185,278)
 //                .centerCrop()
-                .into(imageView);
+                .into(holder.icon);
 
         return convertView;
     }
+
+    static class ViewHolder {
+        ImageView icon;
+    }
+
 }
