@@ -37,6 +37,11 @@ public class DetailActivity extends AppCompatActivity {
             finish();
         }
 
+        if(savedInstanceState != null){
+            if(savedInstanceState.getParcelable("movieItem") != null)
+                movieItem = savedInstanceState.getParcelable("movieItem");
+        }
+
         setData();
 
         if(NetworkUtils.isNetworkAvailable(this))
@@ -44,13 +49,18 @@ public class DetailActivity extends AppCompatActivity {
         else
             Snackbar.make(findViewById(R.id.rootLayout), "No Internet Connection", Snackbar.LENGTH_SHORT).show();
 
-        trailerList = (ListView) findViewById(R.id.trailer_list);
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        savedInstanceState.putParcelable("movieItem",movieItem);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     private void setData(){
         ((TextView)findViewById(R.id.title)).setText(movieItem.getTitle());
-
+        trailerList = (ListView) findViewById(R.id.trailer_list);
         if(movieItem.getTitle().length() > 20){
             ((TextView)findViewById(R.id.title)).setTextSize(28);
         } else if(movieItem.getTitle().length() > 40){
@@ -61,20 +71,14 @@ public class DetailActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.yearOfRelease)).setText(String.valueOf(movieItem.getReleaseYear()));
         ((TextView)findViewById(R.id.runningTime)).setText(String.valueOf(movieItem.getRuntime()) + " min");
         ((TextView)findViewById(R.id.rating)).setText(movieItem.getVoteAverage() + "/10");
-//        findViewById(R.id.markFavorite)
         ((TextView)findViewById(R.id.overview)).setText(movieItem.getOverview());
 
-    }
+        if(movieItem.getTrailerList() != null){
+            TrailerListAdapter adapter = new TrailerListAdapter(DetailActivity.this,0,movieItem.getTrailerList());
+            trailerList.setAdapter(adapter);
+        }
 
-    private List<String> getTrailerData(){
 
-        List<String> trailers = new ArrayList<>();
-
-        trailers.add("Trailer 1");
-        trailers.add("Trailer 2");
-        trailers.add("Trailer 3");
-
-        return trailers;
     }
 
     private class FetchMovieDetails extends AsyncTask<Void,Void,String> {
@@ -161,8 +165,6 @@ public class DetailActivity extends AppCompatActivity {
 
                 setData();
 
-                TrailerListAdapter adapter = new TrailerListAdapter(DetailActivity.this,0,movieItem.getTrailerList());
-                trailerList.setAdapter(adapter);
 
             } catch (IOException e) {
                 e.printStackTrace();

@@ -3,6 +3,7 @@ package gouravexample.popularmoviesstage1;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GridActivity extends AppCompatActivity {
@@ -52,37 +54,17 @@ public class GridActivity extends AppCompatActivity {
             }
         });
 
-    }
+        if(savedInstanceState != null){
+            sortOrder = savedInstanceState.getString("sortOrder");
 
-    private List<MovieItem> getMovies(){
+            if(savedInstanceState.getParcelableArrayList("movieItems") != null) {
+                movieItems = savedInstanceState.getParcelableArrayList("movieItems");
 
-        List<MovieItem> list = new ArrayList<>();
+                ViewAdapter adapter = new ViewAdapter(GridActivity.this, 0, movieItems);
 
-        MovieItem item = new MovieItem();
-        item.setPosterPath("/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg");
-        item.setAdult(false);
-        item.setOverview("From DC Comics comes the Suicide Squad, an antihero team of incarcerated supervillains who act as deniable assets for the United States government, undertaking high-risk black ops missions in exchange for commuted prison sentences.");
-        item.setReleaseDate("2016-08-03");
-        item.setGenreIds(new int[]{28, 80, 878});
-        item.setId(297761);
-        item.setOriginalTitle("Suicide Squad");
-        item.setOriginalLanguage("en");
-        item.setTitle("Suicide Squad");
-        item.setBackDropPath("\\/ndlQ2Cuc3cjTL7lTynw6I4boP4S.jpg");
-        item.setPopularity(61.563586);
-        item.setVideo(false);
-        item.setVoteCount(924);
-        item.setVoteAverage(5.97);
-
-        list.add(item);
-        list.add(item);
-        list.add(item);
-        list.add(item);
-        list.add(item);
-        list.add(item);
-        list.add(item);
-
-        return list;
+                gridView.setAdapter(adapter);
+            }
+        }
     }
 
     @Override
@@ -122,6 +104,15 @@ public class GridActivity extends AppCompatActivity {
                 Snackbar.make(findViewById(R.id.rootLayout), "No Internet Connection", Snackbar.LENGTH_SHORT).show();
         }
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        savedInstanceState.putString("sortOrder",sortOrder);
+        Parcelable[] movieList = new Parcelable[0];
+//        savedInstanceState.putParcelableArray("movieItems",movieItems.toArray(movieList));
+        savedInstanceState.putParcelableArrayList("movieItems",(ArrayList<? extends Parcelable>) movieItems);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     private class FetchMovies extends AsyncTask<String,Void,String>{
