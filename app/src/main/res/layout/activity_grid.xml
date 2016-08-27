@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rootLayout"
     tools:context="gouravexample.popularmoviesstage1.GridActivity">
 
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:numColumns="2"
-        android:id="@+id/grid_movies">
 
-    </GridView>
 
     <!--<ProgressBar-->
         <!--android:layout_width="100dp"-->
@@ -24,4 +18,4 @@
         <!--android:progressDrawable="@drawable/circular"-->
         <!--android:visibility="gone"/>-->
 
-</RelativeLayout>
+</FrameLayout>
