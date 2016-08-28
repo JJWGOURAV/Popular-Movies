@@ -105,6 +105,7 @@ public class GridFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        Log.d(LOG_TAG,"initializing Loader");
         getLoaderManager().initLoader(LOADER_ID, null, this);
         super.onActivityCreated(savedInstanceState);
     }
