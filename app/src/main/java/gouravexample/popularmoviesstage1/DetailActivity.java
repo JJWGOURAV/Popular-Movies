@@ -35,12 +35,14 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        if ((movieItem = getIntent().getParcelableExtra(GridActivity.MOVIE_ITEM)) == null) {
+        String movieId;
+
+        if ((movieId = getIntent().getStringExtra("movieId")) == null) {
             finish();
         }
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.rootLayout,DetailFragment.newInstance("","",movieItem));
+        fragmentTransaction.replace(R.id.rootLayout,DetailFragment.newInstance("","",movieId));
         fragmentTransaction.commit();
     }
 }

@@ -29,6 +29,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="gouravexample.popularmoviesstage1.GridActivity" />
         </activity>
+        <provider
+            android:authorities="gouravexample.popularmoviesstage1"
+            android:name=".data.MovieProvider" />
     </application>
 
 </manifest>
