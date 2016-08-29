@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -131,6 +132,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 movieId = savedInstanceState.getParcelable("movieId");
         }
 
+        Button markFavorite = (Button) rootView.findViewById(R.id.markFavorite);
+        markFavorite.setOnClickListener(btnListener);
+
         return rootView;
     }
 
@@ -196,6 +200,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         trailerList.setAdapter(adapter);
     }
 
+    private View.OnClickListener btnListener = new View.OnClickListener(){
+
+        @Override
+        public void onClick(View v) {
+               new MarkFavorite(getContext()).execute(movieId);
+        }
+    };
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
