@@ -15,6 +15,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
 
 import gouravexample.popularmoviesstage1.data.MoviesContract;
 
@@ -134,6 +136,32 @@ public class FetchMovieDetails extends AsyncTask<String,Void,String> {
             movieValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_YEAR,movieItem.getReleaseYear());
 
             Uri uri = context.getContentResolver().insert(MoviesContract.MovieEntry.CONTENT_URI, movieValues);
+
+            List<Trailer> trailerList = movieItem.getTrailerList();
+            if(trailerList != null){
+                Vector<ContentValues> cVVector = new Vector<ContentValues>(trailerList.size());
+                for(Trailer trailer: trailerList){
+                    ContentValues trailerValues = new ContentValues();
+                    trailerValues.put(MoviesContract.TrailerEntry.COLUMN_NAME,trailer.getName());
+                    trailerValues.put(MoviesContract.TrailerEntry.COLUMN_SIZE,trailer.getSize());
+                    trailerValues.put(MoviesContract.TrailerEntry.COLUMN_SOURCE,trailer.getSource());
+                    trailerValues.put(MoviesContract.TrailerEntry.COLUMN_TYPE,trailer.getType());
+                    trailerValues.put(MoviesContract.TrailerEntry.COLUMN_MOVIE_KEY,movieItem.getId());
+
+                    cVVector.add(trailerValues);
+                }
+
+                int inserted = 0;
+                // add to database
+                if ( cVVector.size() > 0 ) {
+                    ContentValues[] cvArray = new ContentValues[cVVector.size()];
+                    cVVector.toArray(cvArray);
+                    inserted = context.getContentResolver().bulkInsert(MoviesContract.TrailerEntry.CONTENT_URI, cvArray);
+                }
+
+                Log.d(LOG_TAG, " Complete. " + inserted + " Inserted");
+
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

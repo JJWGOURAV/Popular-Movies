@@ -18,6 +18,7 @@ public class MoviesContract {
     private static final String LOG_TAG = MoviesContract.class.getSimpleName();
 
     public static final String PATH_MOVIE = "movies";
+    public static final String PATH_TRAILER = "trailer";
 
     public static final class MovieEntry implements BaseColumns {
 
@@ -63,6 +64,30 @@ public class MoviesContract {
             Log.d(LOG_TAG,uri.toString());
             return uri;
         }
+    }
+
+    public static final class TrailerEntry implements BaseColumns{
+
+        public static final String TABLE_NAME = "trailer";
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TRAILER).build();
+
+        public static final String CONTENT_DIR_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TRAILER;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TRAILER;
+
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_SIZE = "size";
+        public static final String COLUMN_SOURCE = "source";
+        public static final String COLUMN_TYPE = "type";
+        public static final String COLUMN_MOVIE_KEY = "movie_key";
+
+        public static Uri buildWeatherUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+
     }
 
     public static long normalizeDate(long startDate) {

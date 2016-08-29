@@ -26,6 +26,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import gouravexample.popularmoviesstage1.data.MoviesContract;
 
@@ -56,7 +58,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             MoviesContract.MovieEntry.COLUMN_VOTE_COUNT,
             MoviesContract.MovieEntry.COLUMN_VOTE_AVERAGE,
             MoviesContract.MovieEntry.COLUMN_TITLE,
-            MoviesContract.MovieEntry.COLUMN_OVERVIEW
+            MoviesContract.MovieEntry.COLUMN_OVERVIEW,
+            MoviesContract.TrailerEntry.COLUMN_NAME,
+            MoviesContract.TrailerEntry.COLUMN_SIZE,
+            MoviesContract.TrailerEntry.COLUMN_SOURCE,
+            MoviesContract.TrailerEntry.COLUMN_TYPE
     };
 
     //Indices tied to Display columns.
@@ -68,6 +74,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     static final int COL_VOTE_AVERAGE = 5;
     static final int COL_TITLE = 6;
     static final int COL_OVERVIEW = 7;
+    static final int COL_NAME = 8;
+    static final int COL_SIZE = 9;
+    static final int COL_SOURCE = 10;
+    static final int COL_TYPE = 11;
 
 
     private String movieId;
@@ -169,10 +179,21 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         ((TextView)getView().findViewById(R.id.rating)).setText(movieItem.getFloat(COL_VOTE_AVERAGE) + "/10");
         ((TextView)getView().findViewById(R.id.overview)).setText(movieItem.getString(COL_OVERVIEW));
 
-//        if(movieItem.getTrailerList() != null){
-//            TrailerListAdapter adapter = new TrailerListAdapter(getContext(),0,movieItem.getTrailerList());
-//            trailerList.setAdapter(adapter);
-//        }
+        movieItem.moveToFirst();
+        List<Trailer> trailerItems = new ArrayList<>();
+
+        while(movieItem.moveToNext()){
+            Trailer trailer = new Trailer();
+            trailer.setName(movieItem.getString(COL_NAME));
+            trailer.setName(movieItem.getString(COL_SIZE));
+            trailer.setName(movieItem.getString(COL_SOURCE));
+            trailer.setName(movieItem.getString(COL_TYPE));
+
+            trailerItems.add(trailer);
+        }
+
+        TrailerListAdapter adapter = new TrailerListAdapter(getContext(),0,trailerItems);
+        trailerList.setAdapter(adapter);
     }
 
 
