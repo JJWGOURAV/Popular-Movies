@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Vector;
 
 import gouravexample.popularmoviesstage1.data.MoviesContract;
+import gouravexample.popularmoviesstage1.data.MoviesContract.MovieEntry;
+import gouravexample.popularmoviesstage1.data.MoviesContract.MovieFavoriteEntry;
 
 /**
  * Created by GOURAV on 30-08-2016.
@@ -106,32 +108,36 @@ public class FetchMovieFavorites extends AsyncTask<String,Void,String> {
 
             //Add these movie Items to DB.
             Vector<ContentValues> cVVector = new Vector<ContentValues>(movieItems.size());
+            Vector<ContentValues> cVVFavorite = new Vector<>(movieItems.size());
 
             for(MovieItem movieItem: movieItems) {
                 // These are the values that will be collected.
 
                 ContentValues movieValues = new ContentValues();
+                ContentValues favoriteValues = new ContentValues();
 
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_POSTER_PATH,movieItem.getPosterPath());
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_IS_ADULT,movieItem.isAdult());
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_OVERVIEW,movieItem.getOverview());
+                movieValues.put(MovieEntry.COLUMN_POSTER_PATH,movieItem.getPosterPath());
+                movieValues.put(MovieEntry.COLUMN_IS_ADULT,movieItem.isAdult());
+                movieValues.put(MovieEntry.COLUMN_OVERVIEW,movieItem.getOverview());
 //                movieValues.put(MovieEntry.COLUMN_RELEASE_DATE,MoviesContract.normalizeDate(movieItem.getReleaseDate()));
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_GENRE_IDS, Arrays.toString(movieItem.getGenreIds()));
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_API_ID,movieItem.getId());
+                movieValues.put(MovieEntry.COLUMN_GENRE_IDS, Arrays.toString(movieItem.getGenreIds()));
+                movieValues.put(MovieEntry.COLUMN_API_ID,movieItem.getId());
                 Log.d(LOG_TAG,movieItem.getId() + " " + movieItem.getReleaseYear());
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_IMDB_ID,movieItem.getImdb_id());
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_ORIG_TITLE,movieItem.getOriginalTitle());
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_ORIG_LANGUAGE,movieItem.getOriginalLanguage());
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_TITLE,movieItem.getTitle());
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_BACKDROP_PATH,movieItem.getBackDropPath());
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_POPULARITY,movieItem.getPopularity());
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_VOTE_COUNT,movieItem.getVoteCount());
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_VOTE_AVERAGE,movieItem.getVoteAverage());
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_IS_VIDEO, movieItem.isVideo());
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_IS_FAVORITE, String.valueOf(true));
+                movieValues.put(MovieEntry.COLUMN_IMDB_ID,movieItem.getImdb_id());
+                movieValues.put(MovieEntry.COLUMN_ORIG_TITLE,movieItem.getOriginalTitle());
+                movieValues.put(MovieEntry.COLUMN_ORIG_LANGUAGE,movieItem.getOriginalLanguage());
+                movieValues.put(MovieEntry.COLUMN_TITLE,movieItem.getTitle());
+                movieValues.put(MovieEntry.COLUMN_BACKDROP_PATH,movieItem.getBackDropPath());
+                movieValues.put(MovieEntry.COLUMN_POPULARITY,movieItem.getPopularity());
+                movieValues.put(MovieEntry.COLUMN_VOTE_COUNT,movieItem.getVoteCount());
+                movieValues.put(MovieEntry.COLUMN_VOTE_AVERAGE,movieItem.getVoteAverage());
+                movieValues.put(MovieEntry.COLUMN_IS_VIDEO, movieItem.isVideo());
 
+                favoriteValues.put(MovieFavoriteEntry.COLUMN_API_ID,movieItem.getId());
+                favoriteValues.put(MovieFavoriteEntry.COLUMN_IS_FAVORITE, String.valueOf(true));
 
                 cVVector.add(movieValues);
+                cVVFavorite.add(favoriteValues);
             }
 
             int inserted = 0;
@@ -139,7 +145,10 @@ public class FetchMovieFavorites extends AsyncTask<String,Void,String> {
             if ( cVVector.size() > 0 ) {
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
                 cVVector.toArray(cvArray);
-                inserted = context.getContentResolver().bulkInsert(MoviesContract.MovieEntry.CONTENT_URI, cvArray);
+                ContentValues[] cvArrayFavorite = new ContentValues[cVVFavorite.size()];
+                cVVFavorite.toArray(cvArrayFavorite);
+                inserted = context.getContentResolver().bulkInsert(MovieEntry.CONTENT_URI, cvArray);
+                inserted = context.getContentResolver().bulkInsert(MovieFavoriteEntry.CONTENT_URI,cvArrayFavorite);
             }
 
             Log.d(LOG_TAG, "FetchWeatherTask Complete. " + inserted + " Inserted");

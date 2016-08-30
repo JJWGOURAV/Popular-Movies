@@ -201,9 +201,7 @@ public class GridFragment extends Fragment implements LoaderManager.LoaderCallba
         } else if(sortOrder.equals(getResources().getString(R.string.popular))){
             sortString = MoviesContract.MovieEntry.COLUMN_RELEASE_YEAR + " DESC LIMIT 20";
         } else if(sortOrder.equals(getResources().getString(R.string.favorites))){
-            selectionString = MoviesContract.MovieEntry.COLUMN_IS_FAVORITE + "=?";
-            selectionArgs = new String[1];
-            selectionArgs[0] = "true";
+            sortString = getResources().getString(R.string.favorites);
         }
 
         Log.d(LOG_TAG,"SOrtString:" + sortString);
