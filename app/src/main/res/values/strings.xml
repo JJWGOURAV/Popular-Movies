@@ -5,6 +5,7 @@
     <string name="sort_order">Sort Order</string>
     <string name="popular">Popular</string>
     <string name="top_rated">Top Rated</string>
+    <string name="favorites">Favorites</string>
     <string name="mark_favorite">Mark Favorite</string>
     <string name="unmark_favorite">Unmark Favorite</string>
 
@@ -18,6 +19,7 @@
     <string-array name="sort_order_values">
         <item>@string/popular</item>
         <item>@string/top_rated</item>
+        <item>@string/favorites</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

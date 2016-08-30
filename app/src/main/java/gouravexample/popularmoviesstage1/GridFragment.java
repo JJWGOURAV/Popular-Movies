@@ -105,6 +105,8 @@ public class GridFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+//        sortOrder = sharedPrefs.getString(getString(R.string.sort_order), getString(R.string.popular));
         Log.d(LOG_TAG,"initializing Loader");
         getLoaderManager().initLoader(LOADER_ID, null, this);
         super.onActivityCreated(savedInstanceState);
@@ -164,9 +166,13 @@ public class GridFragment extends Fragment implements LoaderManager.LoaderCallba
         String newSortOrder = sharedPrefs.getString(getString(R.string.sort_order), getString(R.string.popular));
         if(!sortOrder.equals(newSortOrder)){
             sortOrder = newSortOrder;
+            getLoaderManager().restartLoader(LOADER_ID,null,this);
             if(NetworkUtils.isNetworkAvailable(getContext())) {
-                new FetchMovies(getContext()).execute(sortOrder);
-                getLoaderManager().restartLoader(LOADER_ID, null, this);
+                if(sortOrder.equals(getResources().getString(R.string.favorites))){
+                    new FetchMovieFavorites(getContext()).execute(sortOrder);
+                }else{
+                    new FetchMovies(getContext()).execute(sortOrder);
+                }
             }
             else
                 Snackbar.make(getView().findViewById(R.id.rootLayout), "No Internet Connection", Snackbar.LENGTH_SHORT).show();
@@ -186,24 +192,33 @@ public class GridFragment extends Fragment implements LoaderManager.LoaderCallba
     public Loader onCreateLoader(int id, Bundle args) {
 
         String sortString = null;
+        String selectionString = null;
+        String[] selectionArgs = null;
+        Log.d(LOG_TAG,"SortOrder:" + sortOrder);
 
         if(sortOrder.equals(getResources().getString(R.string.top_rated))){
             sortString = MoviesContract.MovieEntry.COLUMN_VOTE_AVERAGE + " DESC LIMIT 20";
         } else if(sortOrder.equals(getResources().getString(R.string.popular))){
             sortString = MoviesContract.MovieEntry.COLUMN_RELEASE_YEAR + " DESC LIMIT 20";
+        } else if(sortOrder.equals(getResources().getString(R.string.favorites))){
+            selectionString = MoviesContract.MovieEntry.COLUMN_IS_FAVORITE + "=?";
+            selectionArgs = new String[1];
+            selectionArgs[0] = "true";
         }
+
+        Log.d(LOG_TAG,"SOrtString:" + sortString);
 
         return new CursorLoader(getActivity(),
                 MoviesContract.MovieEntry.CONTENT_URI,
                 DISPLAY_COLUMNS,
-                null,
-                null,
+                selectionString,
+                selectionArgs,
                 sortString);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(LOG_TAG,"D:" + data.getCount());
+        Log.d(LOG_TAG,"Data returned:" + data.getCount());
         movieAdapter.swapCursor(data);
     }
 

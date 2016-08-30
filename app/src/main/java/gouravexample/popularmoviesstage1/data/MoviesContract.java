@@ -54,6 +54,7 @@ public class MoviesContract {
         public static final String COLUMN_VOTE_COUNT="vote_count";
         public static final String COLUMN_IS_ADULT="is_adult";
         public static final String COLUMN_IS_VIDEO="is_video";
+        public static final String COLUMN_IS_FAVORITE="is_favorite";
 
         public static Uri buildWeatherUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

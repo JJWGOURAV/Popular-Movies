@@ -2,11 +2,9 @@ package gouravexample.popularmoviesstage1;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
-
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -20,21 +18,18 @@ import java.util.List;
 import java.util.Vector;
 
 import gouravexample.popularmoviesstage1.data.MoviesContract;
-import gouravexample.popularmoviesstage1.data.MoviesContract.MovieEntry;
 
 /**
- * Created by GOURAV on 28-08-2016.
+ * Created by GOURAV on 30-08-2016.
  */
-public class FetchMovies extends AsyncTask<String,Void,String> {
+public class FetchMovieFavorites extends AsyncTask<String,Void,String> {
 
-    private final String LOG_TAG = FetchMovies.class.getSimpleName();
+    private static final String LOG_TAG = FetchMovieDetails.class.getSimpleName();
+    private Context context;
 
-    private final Context mContext;
-
-    public FetchMovies(Context context) {
-        mContext = context;
+    public FetchMovieFavorites(Context context){
+        this.context = context;
     }
-
 
     @Override
     protected String doInBackground(String... params) {
@@ -48,15 +43,9 @@ public class FetchMovies extends AsyncTask<String,Void,String> {
         String forecastJsonStr = null;
 
         try {
-            URL url=null;
-            if(params[0].equals(mContext.getResources().getString(R.string.popular))){
-                url = new URL("http://api.themoviedb.org/3/movie/popular?api_key=" + Constants.THEMOVIEDB_API_KEY);
-            } else if(params[0].equals(mContext.getResources().getString(R.string.top_rated))){
-                url = new URL("http://api.themoviedb.org/3/movie/top_rated?api_key=" + Constants.THEMOVIEDB_API_KEY);
-            } else {
-                url = new URL("http://api.themoviedb.org/3/movie/top_rated?api_key=" + Constants.THEMOVIEDB_API_KEY);
-            }
+            URL url = new URL("http://api.themoviedb.org/3/account/id/favorite/movies?api_key=" + Constants.THEMOVIEDB_API_KEY + "&session_id=" + Constants.SESSION_ID);
 
+            Log.d(LOG_TAG,url.toString());
             // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
@@ -123,23 +112,23 @@ public class FetchMovies extends AsyncTask<String,Void,String> {
 
                 ContentValues movieValues = new ContentValues();
 
-                movieValues.put(MovieEntry.COLUMN_POSTER_PATH,movieItem.getPosterPath());
-                movieValues.put(MovieEntry.COLUMN_IS_ADULT,movieItem.isAdult());
-                movieValues.put(MovieEntry.COLUMN_OVERVIEW,movieItem.getOverview());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_POSTER_PATH,movieItem.getPosterPath());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_IS_ADULT,movieItem.isAdult());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_OVERVIEW,movieItem.getOverview());
 //                movieValues.put(MovieEntry.COLUMN_RELEASE_DATE,MoviesContract.normalizeDate(movieItem.getReleaseDate()));
-                movieValues.put(MovieEntry.COLUMN_GENRE_IDS, Arrays.toString(movieItem.getGenreIds()));
-                movieValues.put(MovieEntry.COLUMN_API_ID,movieItem.getId());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_GENRE_IDS, Arrays.toString(movieItem.getGenreIds()));
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_API_ID,movieItem.getId());
                 Log.d(LOG_TAG,movieItem.getId() + " " + movieItem.getReleaseYear());
-                movieValues.put(MovieEntry.COLUMN_IMDB_ID,movieItem.getImdb_id());
-                movieValues.put(MovieEntry.COLUMN_RELEASE_YEAR,movieItem.getReleaseYear());
-                movieValues.put(MovieEntry.COLUMN_ORIG_TITLE,movieItem.getOriginalTitle());
-                movieValues.put(MovieEntry.COLUMN_ORIG_LANGUAGE,movieItem.getOriginalLanguage());
-                movieValues.put(MovieEntry.COLUMN_TITLE,movieItem.getTitle());
-                movieValues.put(MovieEntry.COLUMN_BACKDROP_PATH,movieItem.getBackDropPath());
-                movieValues.put(MovieEntry.COLUMN_POPULARITY,movieItem.getPopularity());
-                movieValues.put(MovieEntry.COLUMN_VOTE_COUNT,movieItem.getVoteCount());
-                movieValues.put(MovieEntry.COLUMN_VOTE_AVERAGE,movieItem.getVoteAverage());
-                movieValues.put(MovieEntry.COLUMN_IS_VIDEO, movieItem.isVideo());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_IMDB_ID,movieItem.getImdb_id());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_ORIG_TITLE,movieItem.getOriginalTitle());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_ORIG_LANGUAGE,movieItem.getOriginalLanguage());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_TITLE,movieItem.getTitle());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_BACKDROP_PATH,movieItem.getBackDropPath());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_POPULARITY,movieItem.getPopularity());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_VOTE_COUNT,movieItem.getVoteCount());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_VOTE_AVERAGE,movieItem.getVoteAverage());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_IS_VIDEO, movieItem.isVideo());
+                movieValues.put(MoviesContract.MovieEntry.COLUMN_IS_FAVORITE, String.valueOf(true));
 
 
                 cVVector.add(movieValues);
@@ -150,7 +139,7 @@ public class FetchMovies extends AsyncTask<String,Void,String> {
             if ( cVVector.size() > 0 ) {
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
                 cVVector.toArray(cvArray);
-                inserted = mContext.getContentResolver().bulkInsert(MovieEntry.CONTENT_URI, cvArray);
+                inserted = context.getContentResolver().bulkInsert(MoviesContract.MovieEntry.CONTENT_URI, cvArray);
             }
 
             Log.d(LOG_TAG, "FetchWeatherTask Complete. " + inserted + " Inserted");
@@ -162,4 +151,3 @@ public class FetchMovies extends AsyncTask<String,Void,String> {
         }
     }
 }
-

@@ -43,7 +43,7 @@ public class MarkFavorite extends AsyncTask<String,Void,String> {
         String forecastJsonStr = null;
 
         try {
-            URL url = new URL("http://api.themoviedb.org/3/account/" + params[0] + "/favorite?api_key=" + Constants.THEMOVIEDB_API_KEY + "&session_id=bc7b42a905e39e2511c853b65cb31e560eaaea6e");
+            URL url = new URL("http://api.themoviedb.org/3/account/" + params[0] + "/favorite?api_key=" + Constants.THEMOVIEDB_API_KEY + "&session_id=" + Constants.SESSION_ID);
 
             Log.d(LOG_TAG,url.toString());
             // Create the request to OpenWeatherMap, and open the connection

@@ -50,6 +50,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieEntry.COLUMN_VOTE_COUNT + " MEDIUMINT  , " +
                 MovieEntry.COLUMN_IS_ADULT + " BOOLEAN  , " +
                 MovieEntry.COLUMN_IS_VIDEO + " BOOLEAN , " +
+                MovieEntry.COLUMN_IS_FAVORITE + " BOOLEAN DEFAULT FALSE, " +
                 " UNIQUE (" + MovieEntry.COLUMN_API_ID +
                 ") ON CONFLICT REPLACE);";
 
