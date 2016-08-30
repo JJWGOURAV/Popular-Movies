@@ -1,5 +1,6 @@
 package gouravexample.popularmoviesstage1;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -17,6 +18,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+
+import gouravexample.popularmoviesstage1.data.MoviesContract;
 
 /**
  * Created by GOURAV on 29-08-2016.
@@ -90,6 +93,14 @@ public class MarkFavorite extends AsyncTask<String,Void,String> {
                 return null;
             }
             forecastJsonStr = buffer.toString();
+
+            //Add to DB.
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MoviesContract.MovieFavoriteEntry.COLUMN_API_ID,params[0]);
+            contentValues.put(MoviesContract.MovieFavoriteEntry.COLUMN_IS_FAVORITE, params[1]);
+
+            mContext.getContentResolver().insert(MoviesContract.MovieFavoriteEntry.CONTENT_URI,contentValues);
+
         } catch (IOException e) {
             Log.e("PlaceholderFragment", "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attemping

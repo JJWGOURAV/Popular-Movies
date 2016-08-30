@@ -63,7 +63,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             MoviesContract.TrailerEntry.COLUMN_NAME,
             MoviesContract.TrailerEntry.COLUMN_SIZE,
             MoviesContract.TrailerEntry.COLUMN_SOURCE,
-            MoviesContract.TrailerEntry.COLUMN_TYPE
+            MoviesContract.TrailerEntry.COLUMN_TYPE,
+            MoviesContract.MovieFavoriteEntry.COLUMN_IS_FAVORITE
     };
 
     //Indices tied to Display columns.
@@ -79,6 +80,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     static final int COL_SIZE = 9;
     static final int COL_SOURCE = 10;
     static final int COL_TYPE = 11;
+    static final int COL_FAVORITE = 12;
 
 
     private String movieId;
@@ -184,6 +186,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         ((TextView)getView().findViewById(R.id.rating)).setText(movieItem.getFloat(COL_VOTE_AVERAGE) + "/10");
         ((TextView)getView().findViewById(R.id.overview)).setText(movieItem.getString(COL_OVERVIEW));
 
+        if(movieItem.getString(COL_FAVORITE) != null && Boolean.parseBoolean(movieItem.getString(COL_FAVORITE))){
+            markFavorite.setText(getResources().getString(R.string.unmark_favorite));
+            isFavorite = true;
+        }else{
+            markFavorite.setText(getResources().getString(R.string.mark_favorite));
+            isFavorite = false;
+        }
+
         movieItem.moveToFirst();
         List<Trailer> trailerItems = new ArrayList<>();
 
@@ -207,7 +217,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         public void onClick(View v) {
             if(NetworkUtils.isNetworkAvailable(getContext())) {
                 isFavorite = !isFavorite;
-                markFavorite.setText(getResources().getString(R.string.unmark_favorite));
+                if(isFavorite)
+                    markFavorite.setText(getResources().getString(R.string.unmark_favorite));
+                else
+                    markFavorite.setText(getResources().getString(R.string.mark_favorite));
                 new MarkFavorite(getContext()).execute(movieId, String.valueOf(isFavorite));
             }
         }
