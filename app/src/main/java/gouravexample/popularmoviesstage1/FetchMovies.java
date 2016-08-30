@@ -129,7 +129,8 @@ public class FetchMovies extends AsyncTask<String,Void,String> {
 //                movieValues.put(MovieEntry.COLUMN_RELEASE_DATE,MoviesContract.normalizeDate(movieItem.getReleaseDate()));
                 movieValues.put(MovieEntry.COLUMN_GENRE_IDS, Arrays.toString(movieItem.getGenreIds()));
                 movieValues.put(MovieEntry.COLUMN_API_ID,movieItem.getId());
-                movieValues.put(MoviesContract.MovieEntry.COLUMN_IMDB_ID,movieItem.getImdb_id());
+                Log.d(LOG_TAG,movieItem.getId() + " " + movieItem.getReleaseYear());
+                movieValues.put(MovieEntry.COLUMN_IMDB_ID,movieItem.getImdb_id());
                 movieValues.put(MovieEntry.COLUMN_ORIG_TITLE,movieItem.getOriginalTitle());
                 movieValues.put(MovieEntry.COLUMN_ORIG_LANGUAGE,movieItem.getOriginalLanguage());
                 movieValues.put(MovieEntry.COLUMN_TITLE,movieItem.getTitle());

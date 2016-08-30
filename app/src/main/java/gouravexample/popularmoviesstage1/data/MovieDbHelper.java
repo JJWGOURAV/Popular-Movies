@@ -50,8 +50,8 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieEntry.COLUMN_VOTE_COUNT + " MEDIUMINT  , " +
                 MovieEntry.COLUMN_IS_ADULT + " BOOLEAN  , " +
                 MovieEntry.COLUMN_IS_VIDEO + " BOOLEAN , " +
-                " UNIQUE (" + MovieEntry.COLUMN_API_ID + ", " +
-                MovieEntry.COLUMN_IMDB_ID + ") ON CONFLICT REPLACE);";
+                " UNIQUE (" + MovieEntry.COLUMN_API_ID +
+                ") ON CONFLICT REPLACE);";
 
         Log.d(LOG_TAG,SQL_CREATE_MOVIE_TABLE);
 

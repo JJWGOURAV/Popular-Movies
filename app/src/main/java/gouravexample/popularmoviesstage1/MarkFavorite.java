@@ -52,7 +52,7 @@ public class MarkFavorite extends AsyncTask<String,Void,String> {
 
             HashMap<String,String> hm = new HashMap<>();
             hm.put("media_type","movie");
-            hm.put("favorite",String.valueOf(true));
+            hm.put("favorite",params[1]);
             hm.put("media_id",params[0]);
 
             OutputStream os = urlConnection.getOutputStream();

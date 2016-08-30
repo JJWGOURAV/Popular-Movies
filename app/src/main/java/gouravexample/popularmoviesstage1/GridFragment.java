@@ -164,8 +164,10 @@ public class GridFragment extends Fragment implements LoaderManager.LoaderCallba
         String newSortOrder = sharedPrefs.getString(getString(R.string.sort_order), getString(R.string.popular));
         if(!sortOrder.equals(newSortOrder)){
             sortOrder = newSortOrder;
-            if(NetworkUtils.isNetworkAvailable(getContext()))
+            if(NetworkUtils.isNetworkAvailable(getContext())) {
                 new FetchMovies(getContext()).execute(sortOrder);
+                getLoaderManager().restartLoader(LOADER_ID, null, this);
+            }
             else
                 Snackbar.make(getView().findViewById(R.id.rootLayout), "No Internet Connection", Snackbar.LENGTH_SHORT).show();
         }
@@ -182,12 +184,21 @@ public class GridFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
+
+        String sortString = null;
+
+        if(sortOrder.equals(getResources().getString(R.string.top_rated))){
+            sortString = MoviesContract.MovieEntry.COLUMN_VOTE_AVERAGE + " DESC LIMIT 20";
+        } else if(sortOrder.equals(getResources().getString(R.string.popular))){
+            sortString = MoviesContract.MovieEntry.COLUMN_RELEASE_YEAR + " DESC LIMIT 20";
+        }
+
         return new CursorLoader(getActivity(),
                 MoviesContract.MovieEntry.CONTENT_URI,
                 DISPLAY_COLUMNS,
                 null,
                 null,
-                null);
+                sortString);
     }
 
     @Override

@@ -83,7 +83,7 @@
                             android:id="@+id/markFavorite"
                             android:textAllCaps="true"
                             android:background="@color/lightblueA200"
-                            android:text="Mark as Favorite"/>
+                            android:text="@string/mark_favorite"/>
 
                     </LinearLayout>
 

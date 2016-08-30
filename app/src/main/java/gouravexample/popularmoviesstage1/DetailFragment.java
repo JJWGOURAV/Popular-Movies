@@ -84,7 +84,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private String movieId;
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
     private ListView trailerList;
-
+    private boolean isFavorite = false;
+    private Button markFavorite;
 
 
     public DetailFragment() {
@@ -132,7 +133,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 movieId = savedInstanceState.getParcelable("movieId");
         }
 
-        Button markFavorite = (Button) rootView.findViewById(R.id.markFavorite);
+        markFavorite = (Button) rootView.findViewById(R.id.markFavorite);
         markFavorite.setOnClickListener(btnListener);
 
         return rootView;
@@ -204,7 +205,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         @Override
         public void onClick(View v) {
-               new MarkFavorite(getContext()).execute(movieId);
+            if(NetworkUtils.isNetworkAvailable(getContext())) {
+                isFavorite = !isFavorite;
+                markFavorite.setText(getResources().getString(R.string.unmark_favorite));
+                new MarkFavorite(getContext()).execute(movieId, String.valueOf(isFavorite));
+            }
         }
     };
 

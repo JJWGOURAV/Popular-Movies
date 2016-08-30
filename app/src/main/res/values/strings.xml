@@ -5,6 +5,8 @@
     <string name="sort_order">Sort Order</string>
     <string name="popular">Popular</string>
     <string name="top_rated">Top Rated</string>
+    <string name="mark_favorite">Mark Favorite</string>
+    <string name="unmark_favorite">Unmark Favorite</string>
 
     <string name="title_activity_settings">Settings</string>
 
