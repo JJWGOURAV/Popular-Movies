@@ -13,6 +13,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -27,8 +28,17 @@ import gouravexample.popularmoviesstage1.data.MoviesContract;
  */
 public class MovieAdapter extends CursorAdapter{
 
+    private Picasso mBuilder;
+
+
+
     public MovieAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
+        mBuilder = new Picasso.Builder(context)
+                .loggingEnabled(BuildConfig.DEBUG)
+                .indicatorsEnabled(BuildConfig.DEBUG)
+                .downloader(new OkHttpDownloader(context))
+                .build();
     }
 
     @Override
@@ -43,52 +53,6 @@ public class MovieAdapter extends CursorAdapter{
         LinearLayout ll = (LinearLayout)view;
         ImageView iv = (ImageView) ll.findViewById(R.id.image);
 
-        Picasso.with(context).setIndicatorsEnabled(true);
-
-        Picasso.with(context)
-                .load(cursor.getString(GridFragment.COL_POSTER_PATH))
-                .into(getTarget(cursor.getString(GridFragment.COL_API_ID),iv));
-    }
-
-    private static Target getTarget(final String url,final ImageView iv){
-        Target target = new Target(){
-
-            @Override
-            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-//                new Thread(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-
-                        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + url);
-                        try {
-                            file.createNewFile();
-                            FileOutputStream ostream = new FileOutputStream(file);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, ostream);
-                            ostream.flush();
-                            ostream.close();
-
-                            iv.setImageBitmap(bitmap);
-
-                        } catch (IOException e) {
-                            Log.e("IOException", e.getLocalizedMessage());
-                        }
-//                    }
-//                }).start();
-
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-
-        return target;
+        mBuilder.load(cursor.getString(GridFragment.COL_POSTER_PATH)).into(iv);
     }
 }
