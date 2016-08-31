@@ -1,33 +1,16 @@
 package gouravexample.popularmoviesstage1;
 
+import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
+import android.content.pm.PackageManager;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class GridActivity extends AppCompatActivity {
 
@@ -35,15 +18,21 @@ public class GridActivity extends AppCompatActivity {
     private static final String LOG_TAG = GridActivity.class.getSimpleName();
     private String sortOrder="";
 
+    private final int requestCode = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grid);
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.rootLayout,GridFragment.newInstance("",""));
-        fragmentTransaction.commit();
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.rootLayout,GridFragment.newInstance("",""));
+            fragmentTransaction.commit();
+        } else {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},requestCode);
+        }
 
     }
 
@@ -70,5 +59,20 @@ public class GridActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if(requestCode == this.requestCode){
+            if(resultCode == RESULT_OK){
+                if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.rootLayout,GridFragment.newInstance("",""));
+                    fragmentTransaction.commit();
+                }
+            }else{
+                Snackbar.make(findViewById(R.id.rootLayout),"App will not work without this permission", Snackbar.LENGTH_INDEFINITE).show();
+            }
+        }
+    }
 }
