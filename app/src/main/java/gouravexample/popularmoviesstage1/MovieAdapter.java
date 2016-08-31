@@ -44,15 +44,23 @@ public class MovieAdapter extends CursorAdapter{
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(R.layout.grid_item_movie, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+        view.setTag(viewHolder);
         return view;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-        LinearLayout ll = (LinearLayout)view;
-        ImageView iv = (ImageView) ll.findViewById(R.id.image);
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
+        mBuilder.load(cursor.getString(GridFragment.COL_POSTER_PATH)).into(viewHolder.iv);
+    }
 
-        mBuilder.load(cursor.getString(GridFragment.COL_POSTER_PATH)).into(iv);
+    public static class ViewHolder{
+        ImageView iv;
+
+        public ViewHolder(View view){
+            iv = (ImageView) view.findViewById(R.id.image);
+        }
     }
 }
