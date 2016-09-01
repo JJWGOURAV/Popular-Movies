@@ -120,6 +120,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
             movieId = getArguments().getString("movieId");
+            Log.d(LOG_TAG,"OnCreate:MovieId:" + movieId);
         }
 
     }
@@ -145,11 +146,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public void onStart(){
         super.onStart();
 
-        if(NetworkUtils.isNetworkAvailable(getContext()))
+        if(NetworkUtils.isNetworkAvailable(getContext()) && movieId !=null && !movieId.isEmpty())
             new FetchMovieDetails(getContext()).execute(movieId);
         else
             Snackbar.make(getView().findViewById(R.id.rootLayout), "No Internet Connection", Snackbar.LENGTH_SHORT).show();
     }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {

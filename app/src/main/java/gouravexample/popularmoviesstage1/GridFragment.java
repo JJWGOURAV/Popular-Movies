@@ -105,8 +105,6 @@ public class GridFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-//        sortOrder = sharedPrefs.getString(getString(R.string.sort_order), getString(R.string.popular));
         Log.d(LOG_TAG,"initializing Loader");
         getLoaderManager().initLoader(LOADER_ID, null, this);
         super.onActivityCreated(savedInstanceState);
@@ -132,10 +130,8 @@ public class GridFragment extends Fragment implements LoaderManager.LoaderCallba
 
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
-                    Intent intent = new Intent(getActivity(), DetailActivity.class);
-                    intent.putExtra("movieId",cursor.getString(GridFragment.COL_API_ID));
-                    Log.d(LOG_TAG,cursor.getString(GridFragment.COL_API_ID));
-                    startActivity(intent);
+                    ((Callback) getActivity())
+                            .onItemSelected(cursor.getString(COL_API_ID));
                 }
             }
         });
@@ -223,5 +219,9 @@ public class GridFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onLoaderReset(Loader loader) {
         movieAdapter.swapCursor(null);
+    }
+
+    public interface Callback{
+        public void onItemSelected(String movieId);
     }
 }

@@ -1,21 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rootLayout"
-    tools:context="gouravexample.popularmoviesstage1.GridActivity">
-
-
-
-    <!--<ProgressBar-->
-        <!--android:layout_width="100dp"-->
-        <!--android:layout_height="100dp"-->
-        <!--android:id="@+id/progressBar"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:progress="0"-->
-        <!--android:progressDrawable="@drawable/circular"-->
-        <!--android:visibility="gone"/>-->
-
-</FrameLayout>
+    android:id="@+id/fragment_grid"
+    android:name="gouravexample.popularmoviesstage1.GridFragment"
+    tools:context="gouravexample.popularmoviesstage1.GridActivity"
+    tools:layout="@layout/fragment_grid"/>
